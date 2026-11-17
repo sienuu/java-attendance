@@ -16,7 +16,7 @@
 <section class="panel"><div class="title">04 / RECENT ATTENDANCE</div><div id="recent" class="small">No records loaded.</div></section>
 </main><footer>JAVA ORGANIZATION • MOBILE ATTENDANCE</footer>
 <script>
-let apiUrl='https://script.google.com/macros/s/AKfycbzLyDlyVt17-2BymcjBJ9OVkNXNsqd59QV0pxRICpqRTKiIvAHEq0HBmsGqzVmkuRqimA/exec',students=[],sessionKey='MORNING_IN',scanner=null,running=false,working=false,lastValue='',lastAt=0;
+let apiUrl='https://script.google.com/macros/s/AKfycbxgkTveejThhxjMEf9rcySyFqsUFnFHuxLZ96W85pc8IUKlQY6JqV3jjujJYaN0_YQOmg/exec',students=[],sessionKey='MORNING_IN',scanner=null,running=false,working=false,lastValue='',lastAt=0;
 const $=id=>document.getElementById(id);
 function status(t,c=''){ $('status').textContent=t;$('status').className=c; }
 function selectSession(b){document.querySelectorAll('.session').forEach(x=>x.classList.remove('active'));b.classList.add('active');sessionKey=b.dataset.session;status('Selected '+b.textContent.replace(/\s+/g,' ').trim()+'.');}
