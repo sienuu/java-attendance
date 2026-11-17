@@ -1,31 +1,722 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#080808"><title>JAVA Live Attendance Scanner</title>
-<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-<style>
-:root{color-scheme:dark;--bg:#080808;--panel:#171717;--line:#343434;--muted:#aaa;--green:#9df2b4;--red:#ff9d9d}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}body{margin:0;background:var(--bg);color:#fff;font-family:Arial,sans-serif;min-height:100vh;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}header{padding:17px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#090909;z-index:5}.brand{font-size:21px;font-weight:900;letter-spacing:4px}.tag{font-size:10px;color:#aaa;text-align:right;line-height:1.5}main{max-width:620px;margin:auto;padding:14px}.hero{text-align:center;padding:15px 0 18px}.eyebrow{font-size:10px;letter-spacing:3px;color:#aaa}h1{font-size:clamp(30px,9vw,42px);margin:8px 0}.sub{font-size:13px;color:#aaa}.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:15px;margin-bottom:13px}.title{font-size:12px;font-weight:900;letter-spacing:1px}.sessions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:13px}.session{min-height:76px;border:1px solid #555;border-radius:13px;background:#222;color:white;font-weight:800;font-size:12px}.session b{display:block;font-size:19px;margin-bottom:4px}.session.active{background:#fff;color:#080808;border-color:#fff}.btn{width:100%;min-height:54px;border-radius:13px;border:1px solid #555;background:#242424;color:#fff;font-weight:900;font-size:14px;margin-top:10px}.btn.primary{background:#fff;color:#080808;border-color:#fff}.btn:disabled{opacity:.4}.reader-wrap{margin-top:13px;background:#050505;border:1px solid #444;border-radius:14px;padding:8px;min-height:80px}#reader{width:100%;overflow:hidden;border-radius:10px}#reader video{width:100%!important;object-fit:cover;border-radius:10px}#status{background:#242424;border:1px solid #3b3b3b;padding:13px;border-radius:12px;margin-top:12px;font-size:13px;line-height:1.5;text-align:center;overflow-wrap:anywhere}.good{color:var(--green)}.bad{color:var(--red)}.late{color:#ffd27b}.small{font-size:11px;color:#aaa;line-height:1.5;margin-top:9px}.field{width:100%;padding:13px;border:1px solid #555;border-radius:10px;background:#090909;color:#fff;font-size:13px;margin-top:9px}.student{display:none;text-align:center;padding:15px;background:#222;border:1px solid #444;border-radius:13px;margin-top:12px}.student strong{display:block;font-size:21px;margin:8px 0}.recent{border-top:1px solid #333;padding:10px 0;font-size:12px;display:flex;justify-content:space-between;gap:10px}.recent:first-child{border-top:0}.muted{color:#aaa;font-size:11px}footer{text-align:center;color:#777;font-size:10px;letter-spacing:2px;padding:12px}
-</style></head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101010">
+  <title>JAVA Attendance Scanner</title>
+
+  <script src="https://unpkg.com/html5-qrcode"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #101010;
+      color: #fff;
+      min-height: 100vh;
+      padding: 18px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+      margin: auto;
+    }
+
+    header {
+      text-align: center;
+      padding: 22px 10px;
+    }
+
+    .logo {
+      width: 65px;
+      height: 65px;
+      border: 2px solid white;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto 12px;
+      font-size: 25px;
+      font-weight: 900;
+    }
+
+    header h1 {
+      font-size: 28px;
+      letter-spacing: 5px;
+    }
+
+    header p {
+      color: #999;
+      font-size: 12px;
+      margin-top: 7px;
+      letter-spacing: 2px;
+    }
+
+    .panel {
+      background: #1b1b1b;
+      border: 1px solid #333;
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 12px;
+      color: #aaa;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+      font-weight: bold;
+    }
+
+    #clock {
+      font-size: 25px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    #date {
+      text-align: center;
+      color: #999;
+      font-size: 13px;
+      margin-top: 5px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      color: #aaa;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+
+    select {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid #444;
+      background: #111;
+      color: white;
+      font-size: 15px;
+      outline: none;
+    }
+
+    #reader {
+      width: 100%;
+      overflow: hidden;
+      border-radius: 12px;
+      background: #000;
+    }
+
+    #reader video {
+      border-radius: 12px;
+      object-fit: cover;
+    }
+
+    #reader img {
+      display: none;
+    }
+
+    .camera-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+
+    .primary {
+      background: white;
+      color: black;
+      flex: 1;
+    }
+
+    .secondary {
+      background: #333;
+      color: white;
+      flex: 1;
+      border: 1px solid #555;
+    }
+
+    .status {
+      padding: 13px;
+      border-radius: 10px;
+      background: #252525;
+      color: #bbb;
+      text-align: center;
+      font-size: 13px;
+      margin-top: 13px;
+      line-height: 1.5;
+    }
+
+    .status.success {
+      background: #12351f;
+      color: #7dffa3;
+    }
+
+    .status.error {
+      background: #401b1b;
+      color: #ff9b9b;
+    }
+
+    .status.warning {
+      background: #3c3013;
+      color: #ffdb78;
+    }
+
+    .student-name {
+      font-size: 21px;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    .student-id {
+      text-align: center;
+      color: #aaa;
+      font-size: 13px;
+      margin-top: 5px;
+    }
+
+    .record-details {
+      margin-top: 15px;
+      border-top: 1px solid #333;
+      padding-top: 12px;
+      font-size: 13px;
+      line-height: 2;
+      color: #ccc;
+    }
+
+    .record-details strong {
+      color: white;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .footer {
+      text-align: center;
+      color: #666;
+      font-size: 11px;
+      padding: 15px 0;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 380px) {
+      body {
+        padding: 10px;
+      }
+
+      header h1 {
+        font-size: 24px;
+      }
+
+      .panel {
+        padding: 14px;
+      }
+
+      button {
+        padding: 12px 8px;
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+
 <body>
-<header><div class="brand">JAVA</div><div class="tag">ORGANIZATION<br>LIVE ATTENDANCE</div></header>
-<main>
-<div class="hero"><div class="eyebrow">MOBILE QR ATTENDANCE</div><h1>SCAN & RECORD</h1><div class="sub" id="event">DAILY ATTENDANCE · YEAR ROUND</div></div>
-<section class="panel"><div class="title">01 / GOOGLE SHEETS CONNECTION</div><input id="backend" class="field" type="url" placeholder="Paste your Apps Script Web App /exec URL"><button class="btn primary" onclick="connect()">CONNECT TO GOOGLE SHEETS</button><div class="small">Paste the deployed Apps Script URL ending in /exec. This scanner page must be hosted separately from Apps Script to allow live camera access.</div><div id="connection" class="small">Not connected yet.</div></section>
-<section class="panel"><div class="title">02 / SELECT ATTENDANCE SESSION</div><div class="sessions"><button class="session active" data-session="MORNING_IN" onclick="selectSession(this)"><b>7:00 AM</b>MORNING IN</button><button class="session" data-session="MORNING_OUT" onclick="selectSession(this)"><b>12:00 PM</b>MORNING OUT</button><button class="session" data-session="AFTERNOON_IN" onclick="selectSession(this)"><b>1:00 PM</b>AFTERNOON IN</button><button class="session" data-session="AFTERNOON_OUT" onclick="selectSession(this)"><b>4:00 PM</b>AFTERNOON OUT</button></div></section>
-<section class="panel"><div class="title">03 / LIVE QR SCANNER</div><div class="reader-wrap"><div id="reader"></div></div><button id="start" class="btn primary" onclick="startCamera()" disabled>▶ START LIVE CAMERA</button><button id="stop" class="btn" onclick="stopCamera()" disabled>■ STOP CAMERA</button><div id="status">Connect to Google Sheets first. Then start the live camera.</div><div id="student" class="student"><div class="muted">STUDENT RECOGNIZED</div><strong id="studentName">—</strong><div class="muted" id="studentId">—</div><div id="saved" class="small"></div></div><div class="small">Allow camera access when your browser asks. Use Chrome or Safari and open this page from its HTTPS hosting link. Choose the rear camera when prompted.</div></section>
-<section class="panel"><div class="title">04 / RECENT ATTENDANCE</div><div id="recent" class="small">No records loaded.</div></section>
-</main><footer>JAVA ORGANIZATION • MOBILE ATTENDANCE</footer>
+  <main class="container">
+
+    <header>
+      <div class="logo">J</div>
+      <h1>JAVA</h1>
+      <p>ORGANIZATION ATTENDANCE SYSTEM</p>
+    </header>
+
+    <section class="panel">
+      <div class="section-title">CURRENT DATE AND TIME</div>
+      <div id="clock">--:--:--</div>
+      <div id="date">Loading date...</div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">ATTENDANCE SESSION</div>
+
+      <label for="session">SELECT SESSION</label>
+      <select id="session">
+        <option value="MORNING_IN">MORNING IN — 7:00 AM</option>
+        <option value="MORNING_OUT">MORNING OUT — 12:00 PM</option>
+        <option value="AFTERNOON_IN">AFTERNOON IN — 1:00 PM</option>
+        <option value="AFTERNOON_OUT">AFTERNOON OUT — 4:00 PM</option>
+      </select>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">SCAN STUDENT QR CODE</div>
+
+      <div id="reader"></div>
+
+      <div class="camera-buttons">
+        <button class="primary" id="startBtn" onclick="startCamera()">
+          START CAMERA
+        </button>
+
+        <button class="secondary" id="stopBtn" onclick="stopCamera()" disabled>
+          STOP CAMERA
+        </button>
+      </div>
+
+      <div class="status" id="cameraStatus">
+        Camera is not running. Press START CAMERA.
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">ATTENDANCE RESULT</div>
+
+      <div id="result">
+        <div class="status">Waiting for QR code scan...</div>
+      </div>
+    </section>
+
+    <div class="footer">
+      JAVA ORGANIZATION · ATTENDANCE MANAGEMENT
+    </div>
+
+  </main>
+
 <script>
-let apiUrl='https://script.google.com/macros/s/AKfycbxgkTveejThhxjMEf9rcySyFqsUFnFHuxLZ96W85pc8IUKlQY6JqV3jjujJYaN0_YQOmg/exec',students=[],sessionKey='MORNING_IN',scanner=null,running=false,working=false,lastValue='',lastAt=0;
-const $=id=>document.getElementById(id);
-function status(t,c=''){ $('status').textContent=t;$('status').className=c; }
-function selectSession(b){document.querySelectorAll('.session').forEach(x=>x.classList.remove('active'));b.classList.add('active');sessionKey=b.dataset.session;status('Selected '+b.textContent.replace(/\s+/g,' ').trim()+'.');}
-function jsonp(params){return new Promise((resolve,reject)=>{const cb='javaCb_'+Date.now()+'_'+Math.floor(Math.random()*1e6);const script=document.createElement('script');const timer=setTimeout(()=>{cleanup();reject(new Error('Google Sheets request timed out. Check the /exec URL and deployment access.'));},20000);function cleanup(){clearTimeout(timer);delete window[cb];script.remove();}window[cb]=data=>{cleanup();resolve(data);};script.onerror=()=>{cleanup();reject(new Error('Could not reach Apps Script. Check the Web App URL and internet connection.'));};const q=new URLSearchParams({...params,callback:cb,_:Date.now()});script.src=apiUrl+'?'+q.toString();document.body.appendChild(script);});}
-async function connect(){const u=$('backend').value.trim();if(!/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec(?:\?.*)?$/.test(u)){ $('connection').textContent='Paste the complete deployed Apps Script URL ending in /exec.';return;}apiUrl=u.split('?')[0];$('connection').textContent='Connecting…';$('start').disabled=true;try{const data=await jsonp({action:'students'});if(!data.success)throw new Error(data.error||'Connection failed.');students=data.students||[];$('event').textContent='EVENT • '+data.eventStart+' to '+data.eventEnd;$('connection').textContent='CONNECTED • '+students.length+' STUDENTS • '+data.spreadsheetName;$('connection').className='small good';$('start').disabled=!students.length;renderRecent(data.recent||[]);status(students.length?'Connected. Select a session and start the camera.':'No students found. Check column B names and column C IDs.',students.length?'good':'bad');}catch(e){$('connection').textContent=e.message;$('connection').className='small bad';status(e.message,'bad');}}
-function renderRecent(rows){const box=$('recent');box.innerHTML='';if(!rows.length){box.textContent='No attendance records yet.';return;}rows.forEach(r=>{const d=document.createElement('div');d.className='recent';const left=document.createElement('span');left.textContent=(r.name||'')+' • '+(r.session||'')+' • '+(r.actualTime||'');const right=document.createElement('b');right.textContent=r.status||'SAVED';right.className=r.status==='LATE'?'late':'good';d.append(left,right);box.append(d);});}
-function extractId(raw){return String(raw||'').trim().toUpperCase().split(/[|\s]/)[0].replace(/[^A-Z0-9_-]/g,'');}
-async function onDecoded(raw){const now=Date.now();if(working||(raw===lastValue&&now-lastAt<3000))return;lastValue=raw;lastAt=now;const id=extractId(raw);const student=students.find(s=>s.id===id);if(!student){status('QR ID '+id+' is not in the connected student list.','bad');return;}working=true;$('student').style.display='block';$('studentName').textContent=student.name;$('studentId').textContent='STUDENT ID: '+student.id;$('saved').textContent='Saving attendance…';status('Recognized '+student.name+'. Saving…');try{const result=await jsonp({action:'record',id:student.id,session:sessionKey});if(!result.success)throw new Error(result.error||'Unable to save attendance.');$('saved').textContent=result.session+' • '+result.date+' • '+result.actualTime+' • '+result.status;$('saved').className='small '+(result.status==='LATE'?'late':'good');status(result.name+' recorded successfully • '+result.actualTime+' • '+result.status,result.status==='LATE'?'late':'good');const latest=await jsonp({action:'students'});if(latest.success)renderRecent(latest.recent||[]);}catch(e){$('saved').textContent=e.message;$('saved').className='small bad';status(e.message,'bad');}finally{working=false;lastValue='';}}
-async function startCamera(){if(running||!students.length||!apiUrl)return;if(!window.isSecureContext){status('Camera requires HTTPS. Open the hosted scanner link, not a local file.','bad');return;}if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){status('This browser does not support live camera. Open this HTTPS page in Chrome or Safari.','bad');return;}if(!window.Html5Qrcode){status('QR scanner library did not load. Check internet, then reload.','bad');return;}$('start').disabled=true;status('Requesting camera access…');try{scanner=new Html5Qrcode('reader',{verbose:false});const cameras=await Html5Qrcode.getCameras();if(!cameras||!cameras.length)throw new Error('No camera found on this phone.');let camera=cameras.find(c=>/back|rear|environment/i.test(c.label))||cameras[cameras.length-1];await scanner.start(camera.id,{fps:12,qrbox:(w,h)=>{const side=Math.floor(Math.min(w,h)*0.72);return{width:side,height:side};},aspectRatio:1.0},onDecoded,()=>{});running=true;$('stop').disabled=false;status('LIVE CAMERA ACTIVE • Hold the student QR code inside the scan box.','good');}catch(e){$('start').disabled=false;let m=e.message||String(e);if(e.name==='NotAllowedError'||/permission|notallowed/i.test(m))m='Camera permission was denied by this browser or hosting page. Check browser camera access and ensure you are using the hosted HTTPS scanner page, not Apps Script HTML Service.';status('Unable to start live camera: '+m,'bad');try{if(scanner){await scanner.clear();scanner=null;}}catch(ignore){}}}
-async function stopCamera(){if(scanner){try{if(running)await scanner.stop();}catch(ignore){}try{await scanner.clear();}catch(ignore){}scanner=null;}running=false;$('stop').disabled=true;$('start').disabled=!students.length;status('Camera stopped.');}
-window.addEventListener('pagehide',()=>{if(scanner&&running)scanner.stop().catch(()=>{});});
-</script></body></html>
+  // ==========================================
+  // GOOGLE APPS SCRIPT WEB APP URL
+  // ==========================================
+
+  const API_URL =
+    "https://script.google.com/macros/s/AKfycbz6_8ZuGMudlE9wf1Zb1ymVIh8B4Gl88JhRD7XqWKCYgdhz8ytv5XZfdyCSV4stIMqQgA/exec";
+
+  // ==========================================
+  // APPLICATION SETTINGS
+  // ==========================================
+
+  let scanner = null;
+  let cameraRunning = false;
+  let processing = false;
+  let cameras = [];
+  let currentCameraIndex = 0;
+  let lastScannedId = "";
+
+  const reader = document.getElementById("reader");
+  const startBtn = document.getElementById("startBtn");
+  const stopBtn = document.getElementById("stopBtn");
+  const cameraStatus = document.getElementById("cameraStatus");
+  const result = document.getElementById("result");
+
+  // ==========================================
+  // PHILIPPINE DATE AND TIME
+  // ==========================================
+
+  function updateClock() {
+    const now = new Date();
+
+    document.getElementById("clock").textContent =
+      new Intl.DateTimeFormat("en-PH", {
+        timeZone: "Asia/Manila",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true
+      }).format(now);
+
+    document.getElementById("date").textContent =
+      new Intl.DateTimeFormat("en-PH", {
+        timeZone: "Asia/Manila",
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      }).format(now);
+  }
+
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  // ==========================================
+  // JSONP API CONNECTION
+  // ==========================================
+
+  function apiCall(params) {
+    return new Promise((resolve, reject) => {
+      const callbackName =
+        "javaCallback_" + Date.now() + "_" +
+        Math.floor(Math.random() * 100000);
+
+      const script = document.createElement("script");
+      const query = new URLSearchParams({
+        ...params,
+        callback: callbackName
+      });
+
+      let finished = false;
+
+      const timeout = setTimeout(() => {
+        finish();
+        reject(new Error("Connection timed out. Please check your internet or Apps Script deployment."));
+      }, 15000);
+
+      function finish() {
+        if (finished) return;
+        finished = true;
+
+        clearTimeout(timeout);
+        delete window[callbackName];
+
+        if (script.parentNode) {
+          script.parentNode.removeChild(script);
+        }
+      }
+
+      window[callbackName] = function(data) {
+        finish();
+        resolve(data);
+      };
+
+      script.onerror = function() {
+        finish();
+        reject(new Error("Unable to connect to the attendance server."));
+      };
+
+      script.src = API_URL + "?" + query.toString();
+      document.body.appendChild(script);
+    });
+  }
+
+  // ==========================================
+  // CHECK SERVER CONNECTION
+  // ==========================================
+
+  async function checkConnection() {
+    try {
+      const data = await apiCall({
+        action: "ping"
+      });
+
+      if (data && data.ok) {
+        cameraStatus.textContent =
+          "Connected to JAVA Attendance Database.";
+
+        cameraStatus.className = "status success";
+      } else {
+        throw new Error(
+          data && data.message
+            ? data.message
+            : "Server did not respond correctly."
+        );
+      }
+    } catch (error) {
+      cameraStatus.textContent =
+        "Server connection problem: " + error.message;
+
+      cameraStatus.className = "status error";
+    }
+  }
+
+  checkConnection();
+
+  // ==========================================
+  // CAMERA INITIALIZATION
+  // ==========================================
+
+  async function startCamera() {
+    if (cameraRunning) return;
+
+    if (!window.Html5Qrcode) {
+      cameraStatus.textContent =
+        "QR scanner library failed to load. Check your internet connection.";
+
+      cameraStatus.className = "status error";
+      return;
+    }
+
+    startBtn.disabled = true;
+
+    cameraStatus.textContent = "Starting camera...";
+    cameraStatus.className = "status";
+
+    try {
+      scanner = new Html5Qrcode("reader");
+
+      cameras = await Html5Qrcode.getCameras();
+
+      if (!cameras || cameras.length === 0) {
+        throw new Error("No camera was detected on this device.");
+      }
+
+      currentCameraIndex = findRearCamera(cameras);
+
+      await startSelectedCamera();
+
+      cameraRunning = true;
+      startBtn.disabled = true;
+      stopBtn.disabled = false;
+
+      cameraStatus.textContent =
+        "Camera is active. Point it at a student's QR code.";
+
+      cameraStatus.className = "status success";
+
+    } catch (error) {
+      cameraRunning = false;
+      startBtn.disabled = false;
+      stopBtn.disabled = true;
+
+      cameraStatus.textContent =
+        "Camera error: " + error.message +
+        " Make sure camera permission is allowed and open this site using HTTPS.";
+
+      cameraStatus.className = "status error";
+    }
+  }
+
+  function findRearCamera(cameraList) {
+    const index = cameraList.findIndex(camera =>
+      /back|rear|environment|world/i.test(camera.label)
+    );
+
+    return index >= 0 ? index : 0;
+  }
+
+  async function startSelectedCamera() {
+    const selectedCamera = cameras[currentCameraIndex];
+
+    await scanner.start(
+      selectedCamera.id,
+      {
+        fps: 10,
+        qrbox: function(viewfinderWidth, viewfinderHeight) {
+          const size = Math.min(
+            viewfinderWidth,
+            viewfinderHeight,
+            280
+          );
+
+          return {
+            width: size,
+            height: size
+          };
+        },
+        aspectRatio: 1.0
+      },
+      onScanSuccess,
+      function() {
+        // Ignore frames without a QR code.
+      }
+    );
+  }
+
+  // ==========================================
+  // SWITCH CAMERA
+  // ==========================================
+
+  async function switchCamera() {
+    if (!scanner || cameras.length < 2) {
+      cameraStatus.textContent =
+        "No second camera is available on this device.";
+
+      cameraStatus.className = "status warning";
+      return;
+    }
+
+    try {
+      if (scanner.isScanning) {
+        await scanner.stop();
+      }
+
+      currentCameraIndex =
+        (currentCameraIndex + 1) % cameras.length;
+
+      await startSelectedCamera();
+
+      cameraStatus.textContent =
+        "Switched camera: " + cameras[currentCameraIndex].label;
+
+      cameraStatus.className = "status success";
+
+    } catch (error) {
+      cameraStatus.textContent =
+        "Unable to switch camera: " + error.message;
+
+      cameraStatus.className = "status error";
+    }
+  }
+
+  // ==========================================
+  // STOP CAMERA
+  // ==========================================
+
+  async function stopCamera() {
+    try {
+      if (scanner && scanner.isScanning) {
+        await scanner.stop();
+      }
+
+      cameraRunning = false;
+      processing = false;
+
+      startBtn.disabled = false;
+      stopBtn.disabled = true;
+
+      cameraStatus.textContent = "Camera stopped.";
+      cameraStatus.className = "status";
+
+    } catch (error) {
+      cameraStatus.textContent =
+        "Unable to stop camera: " + error.message;
+
+      cameraStatus.className = "status error";
+    }
+  }
+
+  // ==========================================
+  // QR CODE SCANNING
+  // ==========================================
+
+  async function onScanSuccess(decodedText) {
+    if (processing) return;
+
+    const studentId = decodedText.trim().toUpperCase();
+
+    // QR codes should contain student IDs, e.g. JAVA001.
+    if (!/^JAVA\d+$/i.test(studentId)) {
+      showResult(
+        "Invalid QR Code",
+        "This QR code does not contain a valid JAVA student ID.",
+        "error"
+      );
+      return;
+    }
+
+    processing = true;
+    lastScannedId = studentId;
+
+    const selectedSession =
+      document.getElementById("session").value;
+
+    showResult(
+      "Processing Attendance",
+      "Student ID: " + escapeHTML(studentId) +
+      "<br>Please wait while we save the attendance.",
+      ""
+    );
+
+    try {
+      const data = await apiCall({
+        action: "record",
+        id: studentId,
+        session: selectedSession
+      });
+
+      if (!data || !data.ok) {
+        const duplicate = data && data.duplicate;
+
+        showResult(
+          duplicate ? "Already Recorded" : "Attendance Not Saved",
+          escapeHTML(
+            data && data.message
+              ? data.message
+              : "The attendance could not be recorded."
+          ),
+          duplicate ? "warning" : "error"
+        );
+
+      } else {
+        const statusText = data.late ? "LATE" : "ON TIME";
+
+        showResult(
+          "Attendance Recorded!",
+          `
+            <div class="student-name">
+              ${escapeHTML(data.name || "JAVA Member")}
+            </div>
+
+            <div class="student-id">
+              ${escapeHTML(data.studentId || studentId)}
+            </div>
+
+            <div class="record-details">
+              <div>Session: <strong>${escapeHTML(data.session || selectedSession)}</strong></div>
+              <div>Date: <strong>${escapeHTML(data.date || "")}</strong></div>
+              <div>Time: <strong>${escapeHTML(data.time || "")}</strong></div>
+              <div>Status: <strong>${escapeHTML(data.status || statusText)}</strong></div>
+            </div>
+          `,
+          "success"
+        );
+      }
+
+    } catch (error) {
+      showResult(
+        "Connection Error",
+        escapeHTML(error.message),
+        "error"
+      );
+
+    } finally {
+      processing = false;
+    }
+  }
+
+  // ==========================================
+  // DISPLAY RESULTS
+  // ==========================================
+
+  function showResult(title, message, type) {
+    const className = type
+      ? "status " + type
+      : "status";
+
+    result.innerHTML = `
+      <div class="${className}">
+        <strong>${escapeHTML(title)}</strong>
+        <div style="margin-top:8px;">
+          ${message}
+        </div>
+      </div>
+    `;
+  }
+
+  // ==========================================
+  // BASIC HTML ESCAPING
+  // ==========================================
+
+  function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[char]);
+  }
+
+</script>
+
+</body>
+</html>
